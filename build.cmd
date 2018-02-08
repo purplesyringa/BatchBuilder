@@ -151,7 +151,7 @@ pushd %~dp0
 	del setup.inf
 
 :: Append CAB to bootstrapper ::
-	copy dist\settings.cmd+bootstrap.cmd+dist\data.cab /B dist\bootstrap.cmd
+	copy dist\settings.cmd+compiler\bootstrap.cmd+dist\data.cab /B dist\bootstrap.cmd
 	del dist\settings.cmd
 	del dist\data.cab
 
