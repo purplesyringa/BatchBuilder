@@ -8,6 +8,7 @@ setlocal ENABLEDELAYEDEXPANSION
 	echo 1 >dist\1
 	echo 2 >dist\2
 	echo @echo off >dist\settings.cmd
+	echo rem Built by batchbuilder >>dist\settings.cmd
 
 :: Parse INI
 	set settings_entry=entry.cmd
