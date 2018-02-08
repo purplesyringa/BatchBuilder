@@ -11,7 +11,6 @@ setlocal ENABLEDELAYEDEXPANSION
 	echo set __callee__=
 
 for /F "tokens=1,2,* eol=" %%a IN ('type %1') do (
-	echo %%a %%b %%c >&2
 	if "%%a" == "import" (
 		call :import_handler %1 %2 "%%a" "%%b" "%%c"
 	) else (
