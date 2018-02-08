@@ -29,7 +29,7 @@ if not exist "src" (
 	)
 
 	for /F "tokens=1,* delims==" %%a IN ('set settings_') do (
-		echo set %%a=%%b >>dist\settings.cmd
+		echo set %%a=%%b>>dist\settings.cmd
 	)
 
 	:: Parse compile_if
@@ -123,6 +123,10 @@ if not exist "src" (
 			del "%%a.before_compilation"
 		)
 	)
+
+if "%settings_packed%" == "local" (
+	set settings_packed=no
+)
 
 if "%settings_packed%" == "no" (
 	:: Create bootstrap ::
