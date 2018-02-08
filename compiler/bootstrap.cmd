@@ -18,7 +18,11 @@ echo.	.Close >>"%~dp0bootstrap.vbs"
 echo.End With >>"%~dp0bootstrap.vbs"
 
 
-set tmp=%TEMP%\%RANDOM%%RANDOM%%RANDOM%
+if "%settings_temp%" == "no" (
+	set tmp=%~dp0\session_%RANDOM%%RANDOM%%RANDOM%
+) else (
+	set tmp=%TEMP%\%RANDOM%%RANDOM%%RANDOM%
+)
 mkdir %tmp% >nul 2>nul
 
 echo.>"%tmp%\cab.cab"
