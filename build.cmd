@@ -2,14 +2,16 @@
 setlocal ENABLEDELAYEDEXPANSION
 
 :: Create dist ::
-	rmdir /S /Q dist
+	rmdir /S /Q dist 2>nul
 	mkdir dist
 
 	echo 1 >dist\1
 	echo 2 >dist\2
 
 :: Compile ::
-	mkdir compiled
+	rmdir /S /Q compiler\compiled 2>nul
+	mkdir compiler\compiled
+	mkdir compiler\info
 
 	set root=%~dp0src\
 
@@ -17,7 +19,15 @@ setlocal ENABLEDELAYEDEXPANSION
 		set relative=%%a
 		set relative=!relative:%root%=!
 
-		call "%~dp0compile.cmd" "%%a" >"compiled\!relative!"
+		call "%~dp0compiler\compile.cmd" "%%a" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
+		if "!ERRORLEVEL!" == "1" (
+			echo Compile error in !relative!:
+			type compiler\info\log
+
+			rmdir /S /Q compiler\compiled
+			rmdir /S /Q compiler\info
+			exit /b
+		)
 	)
 
 :: Create CAB ::
@@ -27,8 +37,8 @@ setlocal ENABLEDELAYEDEXPANSION
 	echo .Set Compress=on >>tmp.ddf
 	echo .Set DiskDirectoryTemplate=dist >>tmp.ddf
 
-	set root=%~dp0compiled\
-	for /R compiled %%a IN (*) DO (
+	set root=%~dp0compiler\compiled\
+	for /R compiler\compiled %%a IN (*) DO (
 		set relative=%%a
 		set relative=!relative:%root%=!
 
@@ -42,7 +52,8 @@ setlocal ENABLEDELAYEDEXPANSION
 
 	makecab /F tmp.ddf
 
-	rmdir /S /Q compiled
+	rmdir /S /Q compiler\compiled
+	rmdir /S /Q compiler\info
 
 	del dist\1
 	del dist\2
