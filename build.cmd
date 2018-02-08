@@ -21,7 +21,7 @@ if not exist "src" (
 :: Parse INI
 	set settings_entry=entry.cmd
 	set settings_delete_compiled=yes
-	set settings_compile_if=~-4 .cmd,~-4 .bat
+	set settings_compile_if=batch ~-4 .cmd,batch ~-4 .bat
 	set settings_packed=yes
 
 	for /F "tokens=1,* delims==" %%a IN (src\build.ini) do (
@@ -37,9 +37,9 @@ if not exist "src" (
 
 		for %%i in ("%settings_compile_if:,=" "%") do (
 			set i=%%~i
-			set value=!i:* =!
-			for /F "delims=" %%v in ("!value!") do (
-				set key=!i: %%v=!
+			for /F "tokens=1* delims= " %%u in ("!i:* =!") do (
+				set key=%%u
+				set value=%%v
 			)
 
 			set /a compile_if_count=!compile_if_count! + 1
