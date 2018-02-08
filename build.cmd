@@ -12,6 +12,7 @@ setlocal ENABLEDELAYEDEXPANSION
 :: Parse INI
 	set settings_entry=entry.cmd
 	set settings_delete_compiled=yes
+	set settings_compile_if=~-4 .cmd,~-4 .bat
 
 	for /F "tokens=1,* delims==" %%a IN (src\build.ini) do (
 		set settings_%%a=%%b
@@ -20,6 +21,21 @@ setlocal ENABLEDELAYEDEXPANSION
 	for /F "tokens=1,* delims==" %%a IN ('set settings_') do (
 		echo set %%a=%%b >>dist\settings.cmd
 	)
+
+	:: Parse compile_if
+		set compile_if_count=0
+
+		for %%i in ("%settings_compile_if:,=" "%") do (
+			set i=%%~i
+			set value=!i:* =!
+			for /F "delims=" %%v in ("!value!") do (
+				set key=!i: %%v=!
+			)
+
+			set /a compile_if_count=!compile_if_count! + 1
+			set compile_if_key_!compile_if_count!=!key!
+			set compile_if_value_!compile_if_count!=!value!
+		)
 
 :: Compile ::
 	rmdir /S /Q compiler\compiled 2>nul
@@ -31,14 +47,14 @@ setlocal ENABLEDELAYEDEXPANSION
 
 	for /R src %%a IN (*) DO (
 		set ext=%%a
-		set ext=!ext:~-4!
 
 		set isbat=0
-		if "!ext!" == ".cmd" (
-			set isbat=1
-		)
-		if "!ext!" == ".bat" (
-			set isbat=1
+		for /L %%i in (1,1,%compile_if_count%) do (
+			for /F "delims=" %%k in ("!compile_if_key_%%i!") do (
+				if "!ext:%%k!" == "!compile_if_value_%%i!" (
+					set isbat=1
+				)
+			)
 		)
 
 		set relative=%%a
@@ -66,11 +82,12 @@ setlocal ENABLEDELAYEDEXPANSION
 		set ext=!ext:~-4!
 
 		set isbat=0
-		if "!ext!" == ".cmd" (
-			set isbat=1
-		)
-		if "!ext!" == ".bat" (
-			set isbat=1
+		for /L %%i in (1,1,%compile_if_count%) do (
+			for /F "delims=" %%k in ("!compile_if_key_%%i!") do (
+				if "!ext:%%k!" == "!compile_if_value_%%i!" (
+					set isbat=1
+				)
+			)
 		)
 
 		set relative=%%a
