@@ -11,10 +11,10 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 			if "%%b" == "export" (
 				call :end_export_handler %1 %2 "%%a" "%%b"
 			) else (
-				call :raw_handler %1 %2 "%%a" "%%b"
+				echo %%a %%b
 			)
 		) else (
-			call :raw_handler %1 %2 "%%a" "%%b"
+			echo %%a %%b
 		)
 	)
 )
@@ -72,12 +72,5 @@ exit /b
 		)
 
 		set exporting=BOGUS
-
-	exit /b
-
-:raw_handler
-	rem Bypass
-
-	echo %~3 %~4
 
 	exit /b
