@@ -30,39 +30,67 @@ setlocal ENABLEDELAYEDEXPANSION
 	set root=%~dp0src\
 
 	for /R src %%a IN (*) DO (
+		set ext=%%a
+		set ext=!ext:~-4!
+
+		set isbat=0
+		if "!ext!" == ".cmd" (
+			set isbat=1
+		)
+		if "!ext!" == ".bat" (
+			set isbat=1
+		)
+
 		set relative=%%a
 		set relative=!relative:%root%=!
 
-		call "%~dp0compiler\compile1.cmd" "%%a" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
-		if "!ERRORLEVEL!" == "1" (
-			echo Compile error in !relative!:
-			type compiler\info\log
+		if "!isbat!" == "1" (
+			call "%~dp0compiler\compile1.cmd" "%%a" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
+			if "!ERRORLEVEL!" == "1" (
+				echo Compile error in !relative!:
+				type compiler\info\log
 
-			rmdir /S /Q compiler\compiled
-			rmdir /S /Q compiler\info
-			exit /b
+				rmdir /S /Q compiler\compiled
+				rmdir /S /Q compiler\info
+				exit /b
+			)
+		) else (
+			copy "%%a" "compiler\compiled\!relative!"
 		)
 	)
 
 	set root=%~dp0compiler\compiled\
 
 	for /R compiler\compiled %%a IN (*) DO (
+		set ext=%%a
+		set ext=!ext:~-4!
+
+		set isbat=0
+		if "!ext!" == ".cmd" (
+			set isbat=1
+		)
+		if "!ext!" == ".bat" (
+			set isbat=1
+		)
+
 		set relative=%%a
 		set relative=!relative:%root%=!
 
-		move "%%a" "%%a.before_compilation"
+		if "!isbat!" == "1" (
+			move "%%a" "%%a.before_compilation"
 
-		call "%~dp0compiler\compile2.cmd" "%%a.before_compilation" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
-		if "!ERRORLEVEL!" == "1" (
-			echo Compile error in !relative!:
-			type compiler\info\log
+			call "%~dp0compiler\compile2.cmd" "%%a.before_compilation" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
+			if "!ERRORLEVEL!" == "1" (
+				echo Compile error in !relative!:
+				type compiler\info\log
 
-			rmdir /S /Q compiler\compiled
-			rmdir /S /Q compiler\info
-			exit /b
+				rmdir /S /Q compiler\compiled
+				rmdir /S /Q compiler\info
+				exit /b
+			)
+
+			del "%%a.before_compilation"
 		)
-
-		del "%%a.before_compilation"
 	)
 
 :: Create CAB ::
