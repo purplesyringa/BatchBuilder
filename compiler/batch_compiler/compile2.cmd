@@ -10,12 +10,12 @@ setlocal ENABLEDELAYEDEXPANSION
 	echo )
 	echo set __callee__=
 
-for /F "tokens=1,2,* eol=" %%a IN ('type %1') do (
+for /F "tokens=1,2,3,* eol=" %%a IN ('type %1') do (
 	if "%%a" == "import" (
-		call :import_handler %1 %2 "%%a" "%%b" "%%c"
+		call :import_handler %1 %2 "%%a" "%%b" "%%c %%d"
 	) else (
 		setlocal DISABLEDELAYEDEXPANSION
-		echo %%a %%b %%c
+		echo %%a %%b %%c %%d
 		setlocal ENABLEDELAYEDEXPANSION
 	)
 )
