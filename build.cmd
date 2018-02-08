@@ -7,6 +7,18 @@ setlocal ENABLEDELAYEDEXPANSION
 
 	echo 1 >dist\1
 	echo 2 >dist\2
+	echo @echo off >dist\settings.cmd
+
+:: Parse INI
+	set settings_entry=entry.cmd
+
+	for /F "tokens=1,* delims==" %%a IN (src\build.ini) do (
+		set settings_%%a=%%b
+	)
+
+	for /F "tokens=1,* delims==" %%a IN ('set settings_') do (
+		echo set %%a=%%b >>dist\settings.cmd
+	)
 
 :: Compile ::
 	rmdir /S /Q compiler\compiled 2>nul
@@ -84,5 +96,6 @@ setlocal ENABLEDELAYEDEXPANSION
 	del setup.inf
 
 :: Append CAB to bootstrapper ::
-	copy bootstrap.cmd+dist\data.cab /B dist\bootstrap.cmd
+	copy dist\settings.cmd+bootstrap.cmd+dist\data.cab /B dist\bootstrap.cmd
+	del dist\settings.cmd
 	del dist\data.cab
