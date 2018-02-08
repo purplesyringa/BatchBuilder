@@ -63,11 +63,11 @@ if not exist "src" (
 	for /R src %%a IN (*) DO (
 		set ext=%%a
 
-		set isbat=0
+		set compiler=none
 		for /L %%i in (1,1,%compile_if_count%) do (
 			for /F "delims=" %%k in ("!compile_if_key_%%i!") do (
 				if "!ext:%%k!" == "!compile_if_value_%%i!" (
-					set isbat=1
+					set compiler=!compile_if_compiler_%%i!
 				)
 			)
 		)
@@ -75,8 +75,8 @@ if not exist "src" (
 		set relative=%%a
 		set relative=!relative:%root%=!
 
-		if "!isbat!" == "1" (
-			call "compiler\batch_compiler\compile1.cmd" "%%a" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
+		if not "!compiler!" == "none" (
+			call "compiler\!compiler!_compiler\compile1.cmd" "%%a" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
 			if "!ERRORLEVEL!" == "1" (
 				echo Compile error in !relative!:
 				type compiler\info\log
@@ -98,11 +98,11 @@ if not exist "src" (
 		set ext=%%a
 		set ext=!ext:~-4!
 
-		set isbat=0
+		set compiler=none
 		for /L %%i in (1,1,%compile_if_count%) do (
 			for /F "delims=" %%k in ("!compile_if_key_%%i!") do (
 				if "!ext:%%k!" == "!compile_if_value_%%i!" (
-					set isbat=1
+					set compiler=!compile_if_compiler_%%i!
 				)
 			)
 		)
@@ -110,10 +110,10 @@ if not exist "src" (
 		set relative=%%a
 		set relative=!relative:%root%=!
 
-		if "!isbat!" == "1" (
+		if not "!compiler!" == "none" (
 			move "%%a" "%%a.before_compilation"
 
-			call "compiler\batch_compiler\compile2.cmd" "%%a.before_compilation" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
+			call "compiler\!compiler!_compiler\compile2.cmd" "%%a.before_compilation" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
 			if "!ERRORLEVEL!" == "1" (
 				echo Compile error in !relative!:
 				type compiler\info\log
