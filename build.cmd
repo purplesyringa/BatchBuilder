@@ -46,6 +46,11 @@ if not exist "src" (
 				set compiler=!i: %%k=!
 			)
 
+			if not exist "compiler\!compiler!_compiler" (
+				echo Compiler !compiler! does not exist
+				exit /b
+			)
+
 			set /a compile_if_count=!compile_if_count! + 1
 			set compile_if_compiler_!compile_if_count!=!compiler!
 			set compile_if_key_!compile_if_count!=!key!
