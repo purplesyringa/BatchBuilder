@@ -68,7 +68,7 @@ setlocal ENABLEDELAYEDEXPANSION
 	)
 
 
-	:: Always add 2 more files because EXTRACT works with >1 files only ::
+	:: Always add 2 more files because EXPAND works with >1 files only ::
 	echo "%~dp0dist\1" >>tmp.ddf
 	echo "%~dp0dist\2" >>tmp.ddf
 
