@@ -21,7 +21,7 @@ setlocal ENABLEDELAYEDEXPANSION
 		set relative=%%a
 		set relative=!relative:%root%=!
 
-		call "%~dp0compiler\compile.cmd" "%%a" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
+		call "%~dp0compiler\compile1.cmd" "%%a" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
 		if "!ERRORLEVEL!" == "1" (
 			echo Compile error in !relative!:
 			type compiler\info\log
