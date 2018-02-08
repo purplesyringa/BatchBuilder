@@ -5,6 +5,9 @@ setlocal ENABLEDELAYEDEXPANSION
 	rmdir /S /Q dist
 	mkdir dist
 
+	echo 1 >dist\1
+	echo 2 >dist\2
+
 :: Create CAB ::
 	echo .OPTION EXPLICIT >tmp.ddf
 	echo .Set CabinetNameTemplate=data.cab >>tmp.ddf
@@ -21,8 +24,14 @@ setlocal ENABLEDELAYEDEXPANSION
 		echo "%%a" >>tmp.ddf
 	)
 
+	:: Always add 2 more files because EXTRACT works with >1 files only ::
+	echo "%~dp0dist\1" >>tmp.ddf
+	echo "%~dp0dist\2" >>tmp.ddf
+
 	makecab /F tmp.ddf
 
+	del dist\1
+	del dist\2
 	del tmp.ddf
 	del setup.rpt
 	del setup.inf
