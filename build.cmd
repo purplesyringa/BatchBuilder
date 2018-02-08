@@ -3,6 +3,12 @@ setlocal ENABLEDELAYEDEXPANSION
 
 pushd %~dp0
 
+if not exist "src" (
+	echo No src directory found. Make sure build.cmd is in the same directory as src.
+	echo If you want to create a new project, use create-project.cmd instead.
+	exit /b
+)
+
 :: Create dist ::
 	rmdir /S /Q dist 2>nul
 	mkdir dist
@@ -16,6 +22,7 @@ pushd %~dp0
 	set settings_entry=entry.cmd
 	set settings_delete_compiled=yes
 	set settings_compile_if=~-4 .cmd,~-4 .bat
+	set settings_packed=yes
 
 	for /F "tokens=1,* delims==" %%a IN (src\build.ini) do (
 		set settings_%%a=%%b
@@ -117,42 +124,51 @@ pushd %~dp0
 		)
 	)
 
-:: Create CAB ::
-	echo .OPTION EXPLICIT >tmp.ddf
-	echo .Set CabinetNameTemplate=data.cab >>tmp.ddf
-	echo .Set Cabinet=on >>tmp.ddf
-	echo .Set Compress=on >>tmp.ddf
-	echo .Set DiskDirectoryTemplate=dist >>tmp.ddf
+if "%settings_packed%" == "no" (
+	:: Create bootstrap ::
+		copy dist\settings.cmd+compiler\bootstrap_unpacked.cmd /B dist\bootstrap.cmd
 
-	set root=%~dp0compiler\compiled\
-	for /R compiler\compiled %%a IN (*) DO (
-		set relative=%%a
-		set relative=!relative:%root%=!
+	:: Save scripts :
+		robocopy compiler\compiled dist\contents /E
+) else (
+	:: Create CAB ::
+		echo .OPTION EXPLICIT >tmp.ddf
+		echo .Set CabinetNameTemplate=data.cab >>tmp.ddf
+		echo .Set Cabinet=on >>tmp.ddf
+		echo .Set Compress=on >>tmp.ddf
+		echo .Set DiskDirectoryTemplate=dist >>tmp.ddf
 
-		echo "%%a" >>tmp.ddf
-	)
+		set root=%~dp0compiler\compiled\
+		for /R compiler\compiled %%a IN (*) DO (
+			set relative=%%a
+			set relative=!relative:%root%=!
+
+			echo "%%a" >>tmp.ddf
+		)
 
 
-	:: Always add 2 more files because EXPAND works with >1 files only ::
-	echo "%~dp0dist\1" >>tmp.ddf
-	echo "%~dp0dist\2" >>tmp.ddf
+		:: Always add 2 more files because EXPAND works with >1 files only ::
+		echo "%~dp0dist\1" >>tmp.ddf
+		echo "%~dp0dist\2" >>tmp.ddf
 
-	makecab /F tmp.ddf
+		makecab /F tmp.ddf
 
-	if not "%settings_delete_compiled%" == "no" (
-		rmdir /S /Q compiler\compiled
-	)
-	rmdir /S /Q compiler\info
+		del tmp.ddf
+		del setup.rpt
+		del setup.inf
 
-	del dist\1
-	del dist\2
-	del tmp.ddf
-	del setup.rpt
-	del setup.inf
+	:: Append CAB to bootstrapper ::
+		copy dist\settings.cmd+compiler\bootstrap.cmd+dist\data.cab /B dist\bootstrap.cmd
+		del dist\data.cab
+)
 
-:: Append CAB to bootstrapper ::
-	copy dist\settings.cmd+compiler\bootstrap.cmd+dist\data.cab /B dist\bootstrap.cmd
-	del dist\settings.cmd
-	del dist\data.cab
+if not "%settings_delete_compiled%" == "no" (
+	rmdir /S /Q compiler\compiled
+)
+
+rmdir /S /Q compiler\info
+del dist\1
+del dist\2
+del dist\settings.cmd
 
 popd
