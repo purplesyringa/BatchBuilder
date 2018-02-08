@@ -1,5 +1,3 @@
-@echo off
-
 echo.splitBy="#" >"%~dp0bootstrap.vbs"
 echo.Dim data >>"%~dp0bootstrap.vbs"
 
@@ -28,7 +26,7 @@ cscript //Nologo "%~dp0bootstrap.vbs" "%0" "%tmp%\cab.cab"
 del "%~dp0bootstrap.vbs"
 
 expand "%tmp%\cab.cab" -F:* "%tmp%" >nul 2>nul
-"%tmp%\index.cmd"
+"%tmp%\%settings_entry%"
 
 exit /b
 #
