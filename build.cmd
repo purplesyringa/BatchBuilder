@@ -13,7 +13,6 @@ setlocal ENABLEDELAYEDEXPANSION
 	mkdir compiler\compiled
 	mkdir compiler\info
 	mkdir compiler\info\exports
-	echo.>compiler\info\import_list
 
 	set root=%~dp0src\
 
@@ -75,7 +74,7 @@ setlocal ENABLEDELAYEDEXPANSION
 
 	makecab /F tmp.ddf
 
-	rem rmdir /S /Q compiler\compiled
+	rmdir /S /Q compiler\compiled
 	rmdir /S /Q compiler\info
 
 	del dist\1
