@@ -11,6 +11,7 @@ setlocal ENABLEDELAYEDEXPANSION
 
 :: Parse INI
 	set settings_entry=entry.cmd
+	set settings_delete_compiled=yes
 
 	for /F "tokens=1,* delims==" %%a IN (src\build.ini) do (
 		set settings_%%a=%%b
@@ -86,7 +87,9 @@ setlocal ENABLEDELAYEDEXPANSION
 
 	makecab /F tmp.ddf
 
-	rmdir /S /Q compiler\compiled
+	if not "%settings_delete_compiled%" == "no" (
+		rmdir /S /Q compiler\compiled
+	)
 	rmdir /S /Q compiler\info
 
 	del dist\1
