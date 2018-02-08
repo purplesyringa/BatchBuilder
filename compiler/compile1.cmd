@@ -49,7 +49,7 @@ exit /b
 			exit /b 1
 		)
 
-		echo %~2 >"%~dp0info\exports\%~4"
+		echo %~2>"%~dp0info\exports\%~4"
 
 	echo goto :batchbuilder_end_export_%~4
 	echo :batchbuilder_export_%~4
