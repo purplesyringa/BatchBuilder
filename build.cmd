@@ -12,6 +12,8 @@ setlocal ENABLEDELAYEDEXPANSION
 	rmdir /S /Q compiler\compiled 2>nul
 	mkdir compiler\compiled
 	mkdir compiler\info
+	mkdir compiler\info\exports
+	echo.>compiler\info\import_list
 
 	set root=%~dp0src\
 
