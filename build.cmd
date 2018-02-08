@@ -42,7 +42,12 @@ if not exist "src" (
 				set value=%%v
 			)
 
+			for /F "delims=" %%k in ("!i:* =!") do (
+				set compiler=!i: %%k=!
+			)
+
 			set /a compile_if_count=!compile_if_count! + 1
+			set compile_if_compiler_!compile_if_count!=!compiler!
 			set compile_if_key_!compile_if_count!=!key!
 			set compile_if_value_!compile_if_count!=!value!
 		)
