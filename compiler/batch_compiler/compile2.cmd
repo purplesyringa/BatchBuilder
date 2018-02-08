@@ -14,7 +14,9 @@ for /F "tokens=1,2,* eol=" %%a IN ('type %1') do (
 	if "%%a" == "import" (
 		call :import_handler %1 %2 "%%a" "%%b" "%%c"
 	) else (
+		setlocal DISABLEDELAYEDEXPANSION
 		echo %%a %%b %%c
+		setlocal ENABLEDELAYEDEXPANSION
 	)
 )
 

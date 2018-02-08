@@ -11,10 +11,14 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 			if "%%b" == "export" (
 				call :end_export_handler %1 %2 "%%a" "%%b"
 			) else (
+				setlocal DISABLEDELAYEDEXPANSION
 				echo %%a %%b
+				setlocal ENABLEDELAYEDEXPANSION
 			)
 		) else (
+			setlocal DISABLEDELAYEDEXPANSION
 			echo %%a %%b
+			setlocal ENABLEDELAYEDEXPANSION
 		)
 	)
 )
