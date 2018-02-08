@@ -4,7 +4,7 @@ chcp 65001 >nul 2>nul
 :: Start hidden ::
 
 	if not "%1" == "hidden" (
-		start "" wscript "%~dp0hiddenstart.vbs" "cmd /c ^"%~dp0index.cmd^" hidden"
+		start "" wscript "%~dp0hiddenstart.vbs" "cmd /c ^"%~dp0entry.cmd^" hidden"
 		exit /b
 	)
 
