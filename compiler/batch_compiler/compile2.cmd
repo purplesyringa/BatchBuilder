@@ -28,12 +28,12 @@ exit /b
 	rem call %origin% :batchbuilder_end_export_A
 
 	:: Check that this was exported ::
-		if not exist "%~dp0info\exports\%~4" (
+		if not exist "%~dp0..\info\exports\%~4" (
 			echo Cannot import %~4: not defined anywhere >&2
 			exit /b 1
 		)
 
-	<"%~dp0info\exports\%~4" set /p origin=
+	<"%~dp0..\info\exports\%~4" set /p origin=
 
 	echo call %%~dp0%origin% batchbuilder batchbuilder_export_%~4 %~5
 

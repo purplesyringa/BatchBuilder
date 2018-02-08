@@ -71,7 +71,7 @@ if not exist "src" (
 		set relative=!relative:%root%=!
 
 		if "!isbat!" == "1" (
-			call "compiler\compile1.cmd" "%%a" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
+			call "compiler\batch_compiler\compile1.cmd" "%%a" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
 			if "!ERRORLEVEL!" == "1" (
 				echo Compile error in !relative!:
 				type compiler\info\log
@@ -108,7 +108,7 @@ if not exist "src" (
 		if "!isbat!" == "1" (
 			move "%%a" "%%a.before_compilation"
 
-			call "compiler\compile2.cmd" "%%a.before_compilation" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
+			call "compiler\batch_compiler\compile2.cmd" "%%a.before_compilation" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
 			if "!ERRORLEVEL!" == "1" (
 				echo Compile error in !relative!:
 				type compiler\info\log

@@ -43,13 +43,13 @@ exit /b
 		set exporting=%~4
 
 	:: Check that this was not exported yet ::
-		if exist "info\exports\%~4" (
-			<%~dp0info\exports\%~4 set /p origin=
+		if exist "%~dp0..\info\exports\%~4" (
+			<%~dp0..\info\exports\%~4 set /p origin=
 			echo Second export of %~4: first export in !origin! >&2
 			exit /b 1
 		)
 
-		echo %~2>"%~dp0info\exports\%~4"
+		echo %~2>"%~dp0..\info\exports\%~4"
 
 	echo goto :batchbuilder_end_export_%~4
 	echo :batchbuilder_export_%~4
