@@ -1,6 +1,8 @@
 @echo off
 setlocal ENABLEDELAYEDEXPANSION
 
+pushd %~dp0
+
 :: Create dist ::
 	rmdir /S /Q dist 2>nul
 	mkdir dist
@@ -62,13 +64,15 @@ setlocal ENABLEDELAYEDEXPANSION
 		set relative=!relative:%root%=!
 
 		if "!isbat!" == "1" (
-			call "%~dp0compiler\compile1.cmd" "%%a" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
+			call "compiler\compile1.cmd" "%%a" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
 			if "!ERRORLEVEL!" == "1" (
 				echo Compile error in !relative!:
 				type compiler\info\log
 
 				rmdir /S /Q compiler\compiled
 				rmdir /S /Q compiler\info
+
+				popd
 				exit /b
 			)
 		) else (
@@ -97,13 +101,15 @@ setlocal ENABLEDELAYEDEXPANSION
 		if "!isbat!" == "1" (
 			move "%%a" "%%a.before_compilation"
 
-			call "%~dp0compiler\compile2.cmd" "%%a.before_compilation" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
+			call "compiler\compile2.cmd" "%%a.before_compilation" "!relative!" >"compiler\compiled\!relative!" 2>compiler\info\log
 			if "!ERRORLEVEL!" == "1" (
 				echo Compile error in !relative!:
 				type compiler\info\log
 
 				rmdir /S /Q compiler\compiled
 				rmdir /S /Q compiler\info
+
+				popd
 				exit /b
 			)
 
@@ -148,3 +154,5 @@ setlocal ENABLEDELAYEDEXPANSION
 	copy dist\settings.cmd+bootstrap.cmd+dist\data.cab /B dist\bootstrap.cmd
 	del dist\settings.cmd
 	del dist\data.cab
+
+popd
