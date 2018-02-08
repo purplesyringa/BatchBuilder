@@ -1,0 +1,1 @@
+WScript.Quit MsgBox(WScript.Arguments.Item(0), 65, WScript.Arguments.Item(1))
