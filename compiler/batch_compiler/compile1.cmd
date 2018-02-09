@@ -32,18 +32,33 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 			echo if defined __return__ set "%%__return__%%=%%~b"
 			echo exit /b
 		) else (
-			if "%%a" == "end" (
-				if "%%b" == "export" (
-					call :end_export_handler %1 %2 "%%a" "%%b"
+			if "%%a" == "global" (
+				rem global A=B
+				rem ->
+				rem set A=B
+				rem echo A=B>>%__global_storage__%
+				rem echo A=B>>%__local_storage__%
+
+				echo set %%b
+				echo echo %%b^>^>%%__global_storage__%%
+
+				if not "!exporting!" == "BOGUS" (
+					echo echo %%b^>^>%%__local_storage__%%
+				)
+			) else (
+				if "%%a" == "end" (
+					if "%%b" == "export" (
+						call :end_export_handler %1 %2 "%%a" "%%b"
+					) else (
+						setlocal DISABLEDELAYEDEXPANSION
+						echo %%a %%b
+						endlocal
+					)
 				) else (
 					setlocal DISABLEDELAYEDEXPANSION
 					echo %%a %%b
 					endlocal
 				)
-			) else (
-				setlocal DISABLEDELAYEDEXPANSION
-				echo %%a %%b
-				endlocal
 			)
 		)
 	)
