@@ -39,6 +39,18 @@ for /F "tokens=1,2,3,4,* eol=" %%a IN ('type %1') do (
 				exit /b 1
 			)
 
+		:: Assert that procedure's result isn't saved and function's result is saved ::
+			<"%~dp0..\info\exports_has_return\!import!" set /p has_return=
+			if "!has_return!" == "yes" (
+				if "!to!" == "" (
+					echo Warning: The return value of !import! should be probably utilized>&2
+				)
+			) else (
+				if not "!to!" == "" (
+					echo Warning: !import! is a procedure, though the return value was saved to !to!>&2
+				)
+			)
+
 		<"%~dp0..\info\exports\!import!" set /p origin=
 
 		echo call %%^^~dp0!origin! batchbuilder batchbuilder_export_!import! "!to!" !args!

@@ -19,6 +19,15 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 					exit /b 1
 				)
 
+			:: If something is returned, notice that ::
+				set is_empty=no
+				if "%%b" == "" (
+					set is_empty=yes
+				)
+				if "!is_empty!" == "no" (
+					echo yes>"%~dp0..\info\exports_has_return\!exporting!"
+				)
+
 			type %~dp0after_exported.cmd
 			echo if defined __return__ set "%%__return__%%=%%~b"
 			echo exit /b
@@ -71,6 +80,7 @@ exit /b
 		)
 
 		echo %~2>"%~dp0..\info\exports\%~4"
+		echo no>"%~dp0..\info\exports_has_return\%~4"
 
 	echo goto :batchbuilder_end_export_%~4
 	echo :batchbuilder_export_%~4

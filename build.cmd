@@ -62,6 +62,7 @@ if not exist "src" (
 	mkdir compiler\compiled
 	mkdir compiler\info
 	mkdir compiler\info\exports
+	mkdir compiler\info\exports_has_return
 
 	set root=%~dp0src\
 
@@ -91,6 +92,13 @@ if not exist "src" (
 
 				popd
 				exit /b
+			) else (
+				set first_line=
+				<compiler\info\log set /p first_line=
+				if not "!first_line!" == "" (
+					echo Warnings in !relative!:
+					type compiler\info\log
+				)
 			)
 		) else (
 			copy "%%a" "compiler\compiled\!relative!"
@@ -128,6 +136,13 @@ if not exist "src" (
 
 				popd
 				exit /b
+			) else (
+				set first_line=
+				<compiler\info\log set /p first_line=
+				if not "!first_line!" == "" (
+					echo Warnings in !relative!:
+					type compiler\info\log
+				)
 			)
 
 			del "%%a.before_compilation"
