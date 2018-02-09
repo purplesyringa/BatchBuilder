@@ -19,6 +19,7 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 					exit /b 1
 				)
 
+			type %~dp0after_exported.cmd
 			echo if defined __return__ set "%%__return__%%=%%~b"
 			echo exit /b
 		) else (
@@ -94,22 +95,5 @@ exit /b
 		)
 
 		set exporting=BOGUS
-
-	exit /b
-
-:return_handler
-	rem return A
-	rem ->
-	rem set %__return__%=A
-	rem exit /b
-
-	:: Make sure something is exported at the moment ::
-		if "!exporting!" == "BOGUS" (
-			echo Return outside export >&2
-			exit /b 1
-		)
-
-	echo set %%__return__%%=%~4
-	echo exit /b
 
 	exit /b
