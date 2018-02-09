@@ -14,7 +14,7 @@ BatchBuilder - система сборки BAT/CMD файлов.
 1. Копируем build.cmd и папку compiler куда-нибудь (например, в batch_test).
 2. Создаем папку src и кидаем в нее файл entry.cmd. entry.cmd - ваш BAT.
 
-После изменений
+После изменений:
 1. Запускаем build.cmd.
 2. Появляется папку dist со скриптом bootstrap.cmd, запускаем его.
 
@@ -135,6 +135,29 @@ BatchBuilder - система сборки BAT/CMD файлов.
 | import delete_dir Desktop                      |
 | import delete_dir Pictures                     |
 | import delete_dir Music                        |
++------------------------------------------------+
+
+
+                    ------------------------------
+                           Возврат значений
+                    ------------------------------
+
+Компилятор "batch" BatchBuilder также поддерживает оператор "return" внутри блоков "export" для возврата значения из метода. Для получения возвращенного значения можно использовать оператор "import -> variable command".
+
++------------------------------------------------+
+| delete.cmd                                     |
++------------------------------------------------+
+| export ask                                     |
+|  set /p result=%1?                             |
+|  return %result%                               |
+| end export                                     |
+|                                                |
+| export delete_dir                              |
+|  import -> agree ask "Delete %1"               |
+|  if "%agree%" == "yes" (                       |
+|   rmdir /S /Q %1                               |
+|  )                                             |
+| end export                                     |
 +------------------------------------------------+
 
 
