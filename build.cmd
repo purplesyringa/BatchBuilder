@@ -158,7 +158,7 @@ if "%settings_packed%" == "no" (
 		copy dist\settings.cmd+compiler\bootstrap_unpacked.cmd /B dist\bootstrap.cmd
 
 	:: Save scripts :
-		robocopy compiler\compiled dist\contents /E
+		robocopy compiler\compiled dist\contents /E >nul
 ) else (
 	:: Create CAB ::
 		echo .OPTION EXPLICIT >tmp.ddf
@@ -180,7 +180,7 @@ if "%settings_packed%" == "no" (
 		echo "%~dp0dist\1" >>tmp.ddf
 		echo "%~dp0dist\2" >>tmp.ddf
 
-		makecab /F tmp.ddf
+		makecab /F tmp.ddf >nul
 
 		del tmp.ddf
 		del setup.rpt
