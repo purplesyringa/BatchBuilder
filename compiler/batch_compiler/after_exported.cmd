@@ -1,11 +1,12 @@
+setlocal ENABLEDELAYEDEXPANSION
+
 rem Clean
 for /F "tokens=1,* delims==" %%a IN ('set') do (
 	if not "%%a" == "__local_storage__" (
 		if not "%%a" == "__global_storage__" (
-			if not "%%a" == "__return__" (
-				if not "%%a" == "%__return__%" (
-					set %%a=
-				)
+			set a=%%a
+			if not "!a:~0,9!" == "__return_" (
+				set %%a=
 			)
 		)
 	)
