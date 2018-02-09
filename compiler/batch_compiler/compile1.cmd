@@ -73,6 +73,7 @@ exit /b
 
 	echo goto :batchbuilder_end_export_%~4
 	echo :batchbuilder_export_%~4
+	type %~dp0before_exported.cmd
 
 	exit /b
 
