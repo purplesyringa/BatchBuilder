@@ -7,18 +7,34 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 	if "%%a" == "export" (
 		call :export_handler %1 %2 "%%a" "%%b"
 	) else (
-		if "%%a" == "end" (
-			if "%%b" == "export" (
-				call :end_export_handler %1 %2 "%%a" "%%b"
+		if "%%a" == "return" (
+			rem return A
+			rem ->
+			rem if defined __return__ set %__return__%=A
+			rem exit /b
+
+			:: Make sure something is exported at the moment ::
+				if "!exporting!" == "BOGUS" (
+					echo Return outside export >&2
+					exit /b 1
+				)
+
+			echo if defined __return__ set "%%__return__%%=%%~b"
+			echo exit /b
+		) else (
+			if "%%a" == "end" (
+				if "%%b" == "export" (
+					call :end_export_handler %1 %2 "%%a" "%%b"
+				) else (
+					setlocal DISABLEDELAYEDEXPANSION
+					echo %%a %%b
+					endlocal
+				)
 			) else (
 				setlocal DISABLEDELAYEDEXPANSION
 				echo %%a %%b
-				setlocal ENABLEDELAYEDEXPANSION
+				endlocal
 			)
-		) else (
-			setlocal DISABLEDELAYEDEXPANSION
-			echo %%a %%b
-			setlocal ENABLEDELAYEDEXPANSION
 		)
 	)
 )
@@ -76,5 +92,22 @@ exit /b
 		)
 
 		set exporting=BOGUS
+
+	exit /b
+
+:return_handler
+	rem return A
+	rem ->
+	rem set %__return__%=A
+	rem exit /b
+
+	:: Make sure something is exported at the moment ::
+		if "!exporting!" == "BOGUS" (
+			echo Return outside export >&2
+			exit /b 1
+		)
+
+	echo set %%__return__%%=%~4
+	echo exit /b
 
 	exit /b

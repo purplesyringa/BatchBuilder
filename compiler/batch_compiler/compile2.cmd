@@ -18,35 +18,33 @@ setlocal ENABLEDELAYEDEXPANSION
 
 for /F "tokens=1,2,3,4,* eol=" %%a IN ('type %1') do (
 	if "%%a" == "import" (
+		rem import A
+		rem import -> return A
+		rem ->
+		rem call %origin% :batchbuilder_end_export_A
+
 		if "%%b" == "->" (
-			call :import_handler "%%d" "%%e" "%%c"
+			set import=%%d
+			set to=%%c
+			set args=%%e
 		) else (
-			call :import_handler "%%b" "%%c %%d %%e" ""
+			set import=%%b
+			set to=
+			set args=%%c %%d %%e
 		)
+
+		:: Check that this was exported ::
+			if not exist "%~dp0..\info\exports\!import!" (
+				echo Cannot import !import!: not defined anywhere >&2
+				exit /b 1
+			)
+
+		<"%~dp0..\info\exports\!import!" set /p origin=
+
+		echo call %%^^~dp0!origin! batchbuilder batchbuilder_export_!import! "!to!" !args!
 	) else (
 		setlocal DISABLEDELAYEDEXPANSION
 		echo %%a %%b %%c %%d %%e
-		setlocal ENABLEDELAYEDEXPANSION
+		endlocal
 	)
 )
-
-exit /b
-
-
-:import_handler
-	rem import A
-	rem import -> return A
-	rem ->
-	rem call %origin% :batchbuilder_end_export_A
-
-	:: Check that this was exported ::
-		if not exist "%~dp0..\info\exports\%~1" (
-			echo Cannot import %~1: not defined anywhere >&2
-			exit /b 1
-		)
-
-	<"%~dp0..\info\exports\%~1" set /p origin=
-
-	echo call %%~dp0%origin% batchbuilder batchbuilder_export_%~1 %3 %~2
-
-	exit /b
