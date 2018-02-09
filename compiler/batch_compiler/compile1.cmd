@@ -83,6 +83,7 @@ exit /b
 	rem exit /b
 	rem :batchbuilder_end_export_%exporting%
 
+	type %~dp0after_exported.cmd
 	echo exit /b
 	echo :batchbuilder_end_export_!exporting!
 
