@@ -1,3 +1,8 @@
+rem Save global
+set __global_storage__=%TEMP%\%RANDOM%%RANDOM%%RANDOM%.tmp
+set >%__global_storage__%
+
+
 echo.splitBy="#" >"%~dp0bootstrap.vbs"
 echo.Dim data >>"%~dp0bootstrap.vbs"
 

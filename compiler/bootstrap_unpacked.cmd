@@ -1,3 +1,8 @@
+rem Save global
+set __global_storage__=%TEMP%\%RANDOM%%RANDOM%%RANDOM%.tmp
+set >%__global_storage__%
+
+
 if "%settings_packed%" == "local" (
 	"%~dp0contents\%settings_entry%"
 	exit /b
