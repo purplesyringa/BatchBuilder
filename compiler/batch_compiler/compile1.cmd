@@ -5,12 +5,19 @@ set __directive_safe_recursion__=export
 call :unset_directives all
 
 set exporting=BOGUS
+set exporting_safe_recursion=no
 
 for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 	if "%%a" == "export" (
 		call :check_directives "%%a %%b" raw export
 		if not "!ERRORLEVEL!" == "0" (
 			exit /b !ERRORLEVEL!
+		)
+
+		if "!__active_directive_safe_recursion__!" == "yes" (
+			set exporting_safe_recursion=yes
+		) else (
+			set exporting_safe_recursion=no
 		)
 
 		call :unset_directives export
@@ -44,7 +51,11 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 				)
 
 			echo set __return_value__=%%~b
-			type %~dp0after_exported.cmd
+			if "!exporting_safe_recursion!" == "yes" (
+				type %~dp0after_exported.cmd
+			) else (
+				type %~dp0after_exported_unsafe.cmd
+			)
 			echo exit /b
 		) else (
 			if "%%a" == "global" (
@@ -111,13 +122,13 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 	)
 )
 
-call :check_directives "EOF" raw
-
 :: Make sure nothing is exported at the moment ::
 	if not "!exporting!" == "BOGUS" (
 		echo No "end export" after "export !exporting!" >&2
 		exit /b 1
 	)
+
+call :check_directives "EOF" raw
 
 exit /b
 
@@ -148,7 +159,12 @@ exit /b
 
 	echo goto :batchbuilder_end_export_%~4
 	echo :batchbuilder_export_%~4
-	type %~dp0before_exported.cmd
+
+	if "!exporting_safe_recursion!" == "yes" (
+		type %~dp0before_exported.cmd
+	) else (
+		type %~dp0before_exported_unsafe.cmd
+	)
 
 	exit /b
 
@@ -158,7 +174,11 @@ exit /b
 	rem exit /b
 	rem :batchbuilder_end_export_%exporting%
 
-	type %~dp0after_exported.cmd
+	if "%exporting_safe_recursion%" == "yes" (
+		type %~dp0after_exported.cmd
+	) else (
+		type %~dp0after_exported_unsafe.cmd
+	)
 	echo exit /b
 	echo :batchbuilder_end_export_!exporting!
 
