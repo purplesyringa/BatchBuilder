@@ -168,19 +168,71 @@ BatchBuilder - система сборки BAT/CMD файлов.
 По умолчанию переменные, определенные внутри одной функции, недоступны из другой функции или вызова рекурсии этой же функции.
 
 +------------------------------------------------+
-| delete.cmd                                     |
+| local_vars.cmd                                 |
 +------------------------------------------------+
-| export ask                                     |
-|  set /p result=%1?                             |
-|  return %result%                               |
+| export a                                       |
+|  echo Enter A                                  |
+|  import b                                      |
+|  echo Read local variable my_var from A        |
+|  echo my_var=%my_var%                          |
+|  echo Exit A                                   |
 | end export                                     |
 |                                                |
-| export delete_dir                              |
-|  import -> agree ask "Delete %1"               |
-|  if "%agree%" == "yes" (                       |
-|   rmdir /S /Q %1                               |
-|  )                                             |
+| export b                                       |
+|  echo Enter B                                  |
+|  echo Set local variable my_var                |
+|  set my_var=hello                              |
+|  echo Read local variable my_var from B        |
+|  echo my_var=%my_var%                          |
+|  echo Exit B                                   |
 | end export                                     |
+|                                                |
+| import a                                       |
++------------------------------------------------+
+| Enter A                                        |
+| Enter B                                        |
+| Set local variable my_var                      |
+| Read local variable my_var from B              |
+| my_var=hello                                   |
+| Exit B                                         |
+| Read local variable my_var from A              |
+| my_var=                                        |
+| Exit A                                         |
++------------------------------------------------+
+
+Однако, иногда необходимо пробросить переменную во все функции. Для этого используется ключевое слово "global".
+
++------------------------------------------------+
+| global_vars.cmd                                |
++------------------------------------------------+
+| export a                                       |
+|  echo Enter A                                  |
+|  import b                                      |
+|  echo Read global variable my_var from A       |
+|  echo my_var=%my_var%                          |
+|  echo Exit A                                   |
+| end export                                     |
+|                                                |
+| export b                                       |
+|  echo Enter B                                  |
+|  echo Set global variable my_var               |
+|  global my_var=hello                           |
+|  echo Read global variable my_var from B       |
+|  echo my_var=%my_var%                          |
+|  echo Exit B                                   |
+| end export                                     |
+|                                                |
+| import a                                       |
++------------------------------------------------+
+| Enter A                                        |
+| Enter B                                        |
+| Set global variable my_var                     |
+| Read global variable my_var from B             |
+| my_var=hello                                   |
+| Exit B                                         |
+| Read global variable my_var from A             |
+| my_var=hello                                   |
+| Exit A                                         |
 +------------------------------------------------+
 
 
