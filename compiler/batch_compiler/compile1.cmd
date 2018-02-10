@@ -10,7 +10,7 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 		if "%%a" == "return" (
 			rem return A
 			rem ->
-			rem if defined __return__ set %__return__%=A
+			rem if defined __return__ echo "%__return__%=A" >>%__local_storage__%
 			rem exit /b
 
 			:: Make sure something is exported at the moment ::
@@ -28,8 +28,8 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 					echo yes>"%~dp0..\info\exports_has_return\!exporting!"
 				)
 
+			echo set __return_value__=%%~b
 			type %~dp0after_exported.cmd
-			echo if defined __return__ set "%%__return__%%=%%~b"
 			echo exit /b
 		) else (
 			if "%%a" == "global" (

@@ -3,13 +3,16 @@ setlocal ENABLEDELAYEDEXPANSION
 
 :: First add CALL handler ::
 	echo set __callee__=%%2
-	echo set __return__=%%~3
 	echo if "%%1" == "batchbuilder" (
+	echo set /a __return_recursion__=%%__return_recursion__%% + 1
+	echo )
+	echo if "%%1" == "batchbuilder" (
+	echo set __return_%%__return_recursion__%%__=%%~3
 	echo shift /1
 	echo shift /1
 	echo shift /1
-	echo if defined __return__ (
-	echo set %%__return__%%=
+	echo if defined __return_%%__return_recursion__%%__ (
+	echo call set %%%%__return_%%__return_recursion__%%__%%%%=
 	echo )
 	echo goto %%__callee__%%
 	echo )

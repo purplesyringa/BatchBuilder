@@ -2,6 +2,8 @@ rem Save global
 set __global_storage__=%TEMP%\%RANDOM%%RANDOM%%RANDOM%.tmp
 set >%__global_storage__%
 
+set __return_recursion__=0
+
 
 echo.splitBy="#" >"%~dp0bootstrap.vbs"
 echo.Dim data >>"%~dp0bootstrap.vbs"
