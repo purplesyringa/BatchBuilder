@@ -2,6 +2,7 @@
 setlocal ENABLEDELAYEDEXPANSION
 
 set __directive_safe_recursion__=export
+call :unset_directives all
 
 set exporting=BOGUS
 
@@ -11,6 +12,7 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 		if not "!ERRORLEVEL!" == "0" (
 			exit /b !ERRORLEVEL!
 		)
+
 		call :unset_directives export
 
 		call :export_handler %1 %2 "%%a" "%%b"
@@ -200,6 +202,9 @@ exit /b
 
 		for %%n in (!name!) do (
 			if "!__directive_%%n__!" == "%~1" (
+				set %%f=
+			)
+			if "%~1" == "all" (
 				set %%f=
 			)
 		)
