@@ -8,3 +8,8 @@ if defined __return_%__return_recursion__%__ (
 	call set "%%__return_%__return_recursion__%__%%=%%__return_value__%%"
 )
 set /a "__return_recursion__=%__return_recursion__%-1"
+
+rem Set global
+for /F "tokens=1* delims==" %%a IN ('type %__global_storage__%') do (
+	set "%%a=%%b"
+)
