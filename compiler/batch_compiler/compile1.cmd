@@ -111,6 +111,8 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 	)
 )
 
+call :check_directives "EOF" raw
+
 :: Make sure nothing is exported at the moment ::
 	if not "!exporting!" == "BOGUS" (
 		echo No "end export" after "export !exporting!" >&2
