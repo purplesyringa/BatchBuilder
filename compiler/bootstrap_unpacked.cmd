@@ -2,6 +2,9 @@ rem Save global
 set __global_storage__=%TEMP%\%RANDOM%%RANDOM%%RANDOM%.tmp
 set >%__global_storage__%
 
+set __passed_global_storage__=%TEMP%\%RANDOM%%RANDOM%%RANDOM%.tmp
+echo.>%__passed_global_storage__%
+
 set __return_recursion__=0
 
 

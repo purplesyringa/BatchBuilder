@@ -63,6 +63,7 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 				rem ->
 				rem set A=B
 				rem echo A=B>>%__global_storage__%
+				rem @-safe_recursion echo A=B>>%__passed_global_storage__%
 				rem echo A=B>>%__local_storage__%
 
 				call :check_directives "%%a %%b" raw
@@ -74,6 +75,10 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 				echo echo %%b^>^>%%__global_storage__%%
 
 				if not "!exporting!" == "BOGUS" (
+					if "!exporting_safe_recursion!" == "no" (
+						echo echo %%b^>^>%%__passed_global_storage__%%
+					)
+
 					echo echo %%b^>^>%%__local_storage__%%
 				)
 			) else (
