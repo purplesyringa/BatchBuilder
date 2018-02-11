@@ -162,6 +162,9 @@ if not exist "src" (
 			set __compiler_handled_!compiler!__=
 		)
 
+	:: Add __class__
+		copy "%~dp0compiler\__class__.cmd" "compiler\compiled\__class__.cmd"
+
 if "%settings_packed%" == "local" (
 	set settings_packed=no
 )
