@@ -36,6 +36,7 @@ cscript //Nologo "%~dp0bootstrap.vbs" "%0" "%tmp%\cab.cab"
 del "%~dp0bootstrap.vbs"
 
 expand "%tmp%\cab.cab" -F:* "%tmp%" >nul 2>nul
+call "%tmp%\__class_list__.cmd"
 "%tmp%\%settings_entry%"
 
 exit /b

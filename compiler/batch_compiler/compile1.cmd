@@ -267,7 +267,7 @@ exit /b
 
 		set class=%~4
 
-	echo %2>%~dp0..\info\classes\!class!
+	echo %~2>%~dp0..\info\classes\!class!
 
 	exit /b
 

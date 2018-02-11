@@ -9,6 +9,7 @@ set __return_recursion__=0
 
 
 if "%settings_packed%" == "local" (
+	call "%~dp0contents\__class_list__.cmd"
 	"%~dp0contents\%settings_entry%"
 	exit /b
 )
@@ -16,4 +17,5 @@ if "%settings_packed%" == "local" (
 set tmp=%TEMP%\%RANDOM%%RANDOM%%RANDOM%
 mkdir %tmp% >nul 2>nul
 robocopy "%~dp0contents" "%tmp%\contents" /E >nul 2>nul
+call "%tmp%\contents\__class_list__.cmd"
 "%tmp%\contents\%settings_entry%"

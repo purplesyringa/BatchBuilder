@@ -1,6 +1,8 @@
 @echo off
 setlocal ENABLEDELAYEDEXPANSION
 
+set root=%%~dp0
+
 :: First add CALL handler ::
 	echo set __callee__=%%2
 	echo if "%%1" == "batchbuilder" (
@@ -44,7 +46,7 @@ for /F "tokens=1,2,3,4,* eol=" %%a IN ('type %1') do (
 		for /F "tokens=1* eol= delims=." %%m in ("!import!") do (
 			if not "%%~n" == "" (
 				:: %%m.%%n
-				set import=%%~m_method_%%~n__
+				set import=%%~m %%~n
 
 				echo Cannot verify if "%%~m" variable contains a class. If it doesn't, a runtime error may be thrown >&2
 
@@ -82,7 +84,7 @@ for /F "tokens=1,2,3,4,* eol=" %%a IN ('type %1') do (
 				exit /b 1
 			)
 
-			echo set %%c=__class_%%d
+			echo call !root!__class__.cmd new %%c %%d
 		) else (
 			setlocal DISABLEDELAYEDEXPANSION
 			echo %%a %%b %%c %%d %%e
