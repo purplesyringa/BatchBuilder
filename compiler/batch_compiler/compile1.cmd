@@ -31,7 +31,11 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 
 		call :unset_directives export
 
-		call :export_handler %1 %2 "%%a" "%%b"
+		if "!class!" == "BOGUS" (
+			call :export_handler %1 %2 "%%a" "%%b"
+		) else (
+			call :export_handler %1 %2 "%%a" "__class_!class!_method_%%b__"
+		)
 	) else (
 		if "%%a" == "return" (
 			rem return A
@@ -119,7 +123,11 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 							exit /b !ERRORLEVEL!
 						)
 
-						call :end_export_handler %1 %2 "%%a" "%%b"
+						if "!class!" == "BOGUS" (
+							call :end_export_handler %1 %2 "%%a" "%%b"
+						) else (
+							call :end_export_handler %1 %2 "%%a" "__class_!class!_method_%%b__"
+						)
 					) else (
 						if "%%a" == "class" (
 							call :check_directives "%%a %%b" class
