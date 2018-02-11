@@ -2,10 +2,12 @@
 setlocal ENABLEDELAYEDEXPANSION
 
 set __directive_safe_recursion__=export
+set __directive_follow_local__=export
 call :unset_directives all
 
 set exporting=BOGUS
 set exporting_safe_recursion=no
+set exporting_follow_local=no
 
 for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 	if "%%a" == "export" (
@@ -18,6 +20,11 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 			set exporting_safe_recursion=yes
 		) else (
 			set exporting_safe_recursion=no
+		)
+		if "!__active_directive_follow_local__!" == "yes" (
+			set exporting_follow_local=yes
+		) else (
+			set exporting_follow_local=no
 		)
 
 		call :unset_directives export
@@ -166,9 +173,17 @@ exit /b
 	echo :batchbuilder_export_%~4
 
 	if "!exporting_safe_recursion!" == "yes" (
-		type %~dp0before_exported.cmd
+		if "!exporting_follow_local!" == "yes" (
+			type %~dp0before_exported_follow.cmd
+		) else (
+			type %~dp0before_exported.cmd
+		)
 	) else (
-		type %~dp0before_exported_unsafe.cmd
+		if "!exporting_follow_local!" == "yes" (
+			type %~dp0before_exported_follow_unsafe.cmd
+		) else (
+			type %~dp0before_exported_unsafe.cmd
+		)
 	)
 
 	exit /b
