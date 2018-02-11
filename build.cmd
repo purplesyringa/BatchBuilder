@@ -149,6 +149,18 @@ if not exist "src" (
 		)
 	)
 
+	:: Run finish hooks ::
+		for /L %%i in (1,1,%compile_if_count%) do (
+			set compiler=!compile_if_compiler_%%i!
+			if not defined __compiler_handled_!compiler!__ (
+				set __compiler_handled_!compiler!__=yes
+				call "compiler\!compiler!_compiler\finish.cmd"
+			)
+		)
+		for /L %%i in (1,1,%compile_if_count%) do (
+			set __compiler_handled_!compiler!__=
+		)
+
 if "%settings_packed%" == "local" (
 	set settings_packed=no
 )
