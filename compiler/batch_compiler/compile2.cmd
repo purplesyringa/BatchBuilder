@@ -58,8 +58,19 @@ for /F "tokens=1,2,3,4,* eol=" %%a IN ('type %1') do (
 
 		echo call %%^^~dp0!origin! batchbuilder batchbuilder_export_!import! "!to!" !args!
 	) else (
-		setlocal DISABLEDELAYEDEXPANSION
-		echo %%a %%b %%c %%d %%e
-		endlocal
+		if "%%a" == "new" (
+			rem new -> A B
+
+			if not "%%b" == "->" (
+				echo It makes no sense to create an instance of class "%%b" and don't save it to a variable. Use "new -> var Class" syntax instead>&2
+				exit /b 1
+			)
+
+			echo set %%c=__instance_%%d__
+		) else (
+			setlocal DISABLEDELAYEDEXPANSION
+			echo %%a %%b %%c %%d %%e
+			endlocal
+		)
 	)
 )
