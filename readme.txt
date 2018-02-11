@@ -248,6 +248,73 @@ BatchBuilder - система сборки BAT/CMD файлов.
 
    Если необходим большой уровень рекурсии, имеет смысл использовать директиву @safe_recursion, которая сохраняет и восстанавливает переменные через файлы, а не "setlocal" и "endlocal". Однако, @safe_recursion может сильно замедлить программу.
 
+2. @follow_local
+
+   Для упрощения работы с переменными все локальные переменные caller'а удаляются, а после выполнения восстанавливаются. Например:
+
++------------------------------------------------+
+| non_local.cmd                                  |
++------------------------------------------------+
+| export a                                       |
+|  echo Enter A                                  |
+|  echo Set my_var=hello                         |
+|  set my_var=hello                              |
+|  import b                                      |
+|  echo Exit A                                   |
+| end export                                     |
+|                                                |
+| export b                                       |
+|  echo Enter B                                  |
+|  echo Read local variable my_var               |
+|  echo my_var=%my_var%                          |
+|  echo Exit B                                   |
+| end export                                     |
+|                                                |
+| import a                                       |
++------------------------------------------------+
+| Enter A                                        |
+| Set my_var=hello                               |
+| Enter B                                        |
+| Read local variable my_var                     |
+| my_var=                                        |
+| Exit B                                         |
+| Exit A                                         |
++------------------------------------------------+
+
+   Однако, для ускорения вызовов рекурсии имеет смысл использовать директиву @follow_local, если не учитываются пустые переменные:
+
++------------------------------------------------+
+| local.cmd                                      |
++------------------------------------------------+
+| export a                                       |
+|  echo Enter A                                  |
+|  echo Set my_var=hello                         |
+|  set my_var=hello                              |
+|  import b                                      |
+|  echo Exit A                                   |
+| end export                                     |
+|                                                |
+| @directive follow_local                        |
+| export b                                       |
+|  echo Enter B                                  |
+|  echo Read local variable my_var               |
+|  echo my_var=%my_var%                          |
+|  echo Exit B                                   |
+| end export                                     |
+|                                                |
+| import a                                       |
++------------------------------------------------+
+| Enter A                                        |
+| Set my_var=hello                               |
+| Enter B                                        |
+| Read local variable my_var                     |
+| my_var=hello                                   |
+| Exit B                                         |
+| Exit A                                         |
++------------------------------------------------+
+
+   Наибольшее ускорение можно получить, если использовать @follow_local и unsafe-рекурсию.
+
 
                     ------------------------------
                            Рабочие примеры
