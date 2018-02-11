@@ -24,7 +24,12 @@ for /F "tokens=1,2,3,4,* eol=" %%a IN ('type %1') do (
 		rem import A
 		rem import -> return A
 		rem ->
-		rem call %origin% :batchbuilder_end_export_A
+		rem call %origin% :batchbuilder_export_A
+
+		rem import %instance%.A
+		rem import -> return %instance%.A
+		rem ->
+		rem call %origin% :batchbuilder_export___class_%class%_method_A__
 
 		if "%%b" == "->" (
 			set import=%%d
@@ -36,25 +41,36 @@ for /F "tokens=1,2,3,4,* eol=" %%a IN ('type %1') do (
 			set args=%%c %%d %%e
 		)
 
-		:: Check that this was exported ::
-			if not exist "%~dp0..\info\exports\!import!" (
-				echo Cannot import !import!: not defined anywhere >&2
-				exit /b 1
-			)
+		for /F "tokens=1* eol= delims=." %%m in ("!import!") do (
+			if not "%%~n" == "" (
+				:: %%m.%%n
+				set import=%%~m_method_%%~n__
 
-		:: Assert that procedure's result isn't saved and function's result is saved ::
-			<"%~dp0..\info\exports_has_return\!import!" set /p has_return=
-			if "!has_return!" == "yes" (
-				if "!to!" == "" (
-					echo Warning: The return value of !import! should be probably utilized>&2
-				)
+				echo Cannot verify if "%%~m" variable contains a class. If it doesn't, a runtime error may be thrown >&2
+
+				set origin=__class__.cmd
 			) else (
-				if not "!to!" == "" (
-					echo Warning: !import! is a procedure, though the return value was saved to !to!>&2
-				)
-			)
+				:: Check that this was exported ::
+					if not exist "%~dp0..\info\exports\!import!" (
+						echo Cannot import !import!: not defined anywhere >&2
+						exit /b 1
+					)
 
-		<"%~dp0..\info\exports\!import!" set /p origin=
+				:: Assert that procedure's result isn't saved and function's result is saved ::
+					<"%~dp0..\info\exports_has_return\!import!" set /p has_return=
+					if "!has_return!" == "yes" (
+						if "!to!" == "" (
+							echo Warning: The return value of !import! should be probably utilized>&2
+						)
+					) else (
+						if not "!to!" == "" (
+							echo Warning: !import! is a procedure, though the return value was saved to !to!>&2
+						)
+					)
+
+				<"%~dp0..\info\exports\!import!" set /p origin=
+			)
+		)
 
 		echo call %%^^~dp0!origin! batchbuilder batchbuilder_export_!import! "!to!" !args!
 	) else (
@@ -66,7 +82,7 @@ for /F "tokens=1,2,3,4,* eol=" %%a IN ('type %1') do (
 				exit /b 1
 			)
 
-			echo set %%c=__instance_%%d__
+			echo set %%c=__class_%%d
 		) else (
 			setlocal DISABLEDELAYEDEXPANSION
 			echo %%a %%b %%c %%d %%e

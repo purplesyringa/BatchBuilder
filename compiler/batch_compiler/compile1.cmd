@@ -34,7 +34,7 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 		if "!class!" == "BOGUS" (
 			call :export_handler %1 %2 "%%a" "%%b"
 		) else (
-			call :export_handler %1 %2 "%%a" "__class_!class!_method_%%b__"
+			call :export_handler %1 "__class__.cmd" "%%a" "!class!$%%b"
 		)
 	) else (
 		if "%%a" == "return" (
@@ -266,6 +266,8 @@ exit /b
 		)
 
 		set class=%~4
+
+	echo %2>%~dp0..\info\classes\!class!
 
 	exit /b
 

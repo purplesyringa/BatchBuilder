@@ -63,6 +63,7 @@ if not exist "src" (
 	mkdir compiler\info
 	mkdir compiler\info\exports
 	mkdir compiler\info\exports_has_return
+	mkdir compiler\info\classes
 
 	set root=%~dp0src\
 
