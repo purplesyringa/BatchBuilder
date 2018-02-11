@@ -9,6 +9,8 @@ set exporting=BOGUS
 set exporting_safe_recursion=no
 set exporting_follow_local=no
 
+set class=BOGUS
+
 for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 	if "%%a" == "export" (
 		call :check_directives "%%a %%b" raw export
@@ -119,14 +121,36 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 
 						call :end_export_handler %1 %2 "%%a" "%%b"
 					) else (
-						call :check_directives "%%a %%b" raw
-						if not "!ERRORLEVEL!" == "0" (
-							exit /b !ERRORLEVEL!
-						)
+						if "%%a" == "class" (
+							call :check_directives "%%a %%b" class
+							if not "!ERRORLEVEL!" == "0" (
+								exit /b !ERRORLEVEL!
+							)
 
-						setlocal DISABLEDELAYEDEXPANSION
-						echo %%a %%b
-						endlocal
+							call :class_handler %1 %2 "%%a" "%%b"
+						) else (
+							set is_end_class=no
+							if "%%a" == "end" if "%%b" == "class" (
+								set is_end_class=yes
+							)
+							if "!is_end_class!" == "yes" (
+								call :check_directives "%%a %%b" raw
+								if not "!ERRORLEVEL!" == "0" (
+									exit /b !ERRORLEVEL!
+								)
+
+								call :end_class_handler %1 %2 "%%a" "%%b"
+							) else (
+								call :check_directives "%%a %%b" raw
+								if not "!ERRORLEVEL!" == "0" (
+									exit /b !ERRORLEVEL!
+								)
+
+								setlocal DISABLEDELAYEDEXPANSION
+								echo %%a %%b
+								endlocal
+							)
+						)
 					)
 				)
 			)
@@ -137,6 +161,12 @@ for /F "tokens=1,* eol=" %%a IN ('type %1') do (
 :: Make sure nothing is exported at the moment ::
 	if not "!exporting!" == "BOGUS" (
 		echo No "end export" after "export !exporting!" >&2
+		exit /b 1
+	)
+
+:: Make sure no class is being created at the moment ::
+	if not "!class!" == "BOGUS" (
+		echo No "end class" after "class !class!" >&2
 		exit /b 1
 	)
 
@@ -209,6 +239,44 @@ exit /b
 		)
 
 		set exporting=BOGUS
+
+	exit /b
+
+:class_handler
+	rem class Name
+
+	:: Make sure nothing is exported at the moment ::
+		if not "!exporting!" == "BOGUS" (
+			echo Trying to create class "%~4" inside export of "!exporting!" >&2
+			exit /b 1
+		)
+
+	:: Make sure no class is being created at the moment ::
+		if not "!class!" == "BOGUS" (
+			echo Trying to create class "%~4" inside class "!class!" >&2
+			exit /b 1
+		)
+
+		set class=%~4
+
+	exit /b
+
+:end_class_handler
+	rem end class
+
+	:: Make sure some class is being created at the moment ::
+		if "!class!" == "BOGUS" (
+			echo Trying to end uncreated class >&2
+			exit /b 1
+		)
+
+	:: Make sure nothing is exported at the moment ::
+		if not "!exporting!" == "BOGUS" (
+			echo Trying to end class "!class!" without closing export "!exporting!" >&2
+			exit /b 1
+		)
+
+	set class=BOGUS
 
 	exit /b
 
