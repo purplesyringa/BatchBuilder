@@ -1,2 +1,4 @@
 dist/
 src/
+compiler/compiled/
+compiler/info/
