@@ -90,7 +90,12 @@ for /F "tokens=1,2,3,4,* eol=" %%a IN ('type %1') do (
 			echo call !root!__class__.cmd new %%c %%d
 
 			if exist "%~dp0..\info\exports\%%d$magic_init" (
-				echo call call !root!__class__.cmd batchbuilder batchbuilder_export_%%%%%%c%%%% magic_init "" ""
+				echo call call !root!__class__.cmd batchbuilder batchbuilder_export_%%%%%%c%%%% magic_init "" "" %%e
+			) else (
+				if not "%%e" == "" (
+					echo It makes no sense to pass argument^(s^) "%%e" to "new -> %%c %%d" when constructor is not defined>&2
+					exit /b 1
+				)
 			)
 		) else (
 			setlocal DISABLEDELAYEDEXPANSION

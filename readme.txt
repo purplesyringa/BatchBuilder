@@ -418,20 +418,20 @@ BatchBuilder - система сборки BAT/CMD файлов.
 
 1. magic_init
 
-   Вызывается, когда создается объект при помощи оператора "new".
+   Вызывается, когда создается объект при помощи оператора "new". В метод magic_init можно передать параметры через оператор "new":
 
 +------------------------------------------------+
 | magic.cmd                                      |
 +------------------------------------------------+
 | class ClassTest                                |
 |  export magic_init                             |
-|   echo Created                                 |
+|   echo Created %~1                             |
 |  end export                                    |
 | end class                                      |
 |                                                |
-| new -> instance ClassTest                      |
+| new -> instance ClassTest "for test"           |
 +------------------------------------------------+
-| Created                                        |
+| Created for test                               |
 +------------------------------------------------+
 
 
