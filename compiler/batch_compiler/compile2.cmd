@@ -88,6 +88,7 @@ for /F "tokens=1,2,3,4,* eol=" %%a IN ('type %1') do (
 			)
 
 			echo call !root!__class__.cmd new %%c %%d
+			echo call call !root!__class__.cmd batchbuilder batchbuilder_export_%%%%%%c%%%% magic_init "" ""
 		) else (
 			setlocal DISABLEDELAYEDEXPANSION
 			echo %%a %%b %%c %%d %%e
