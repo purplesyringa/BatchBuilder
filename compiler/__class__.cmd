@@ -24,6 +24,8 @@ set __instance__=%__instance__:batchbuilder_export_=%
 
 set __callee__=%~3
 
+set __to__=%~4
+
 if not defined %__instance__% (
 	echo Instance %__instance__% is not a real instance of any class.
 	exit /b 1
@@ -37,6 +39,7 @@ shift /1
 shift /1
 shift /1
 shift /1
+shift /1
 
 rem Get all arguments to variable
 set params=%1
@@ -44,11 +47,11 @@ set params=%1
 setlocal ENABLEDELAYEDEXPANSION
 set id=0
 for %%r in (%*) do (
-	if !id! gtr 4 (
+	if !id! gtr 5 (
 		set params=!params! %%r
 	)
 	set /a id=!id! + 1
 )
 endlocal & set params=%params%
 
-call %~dp0%__origin__% batchbuilder batchbuilder_export_%__class__%$%__callee__% %params%
+call %~dp0%__origin__% batchbuilder batchbuilder_export_%__class__%$%__callee__% "%__to__%" %__instance__% %params%

@@ -5,11 +5,13 @@ set root=%%~dp0
 
 :: First add CALL handler ::
 	echo set __callee__=%%2
+	echo set this=%%4
 	echo if "%%1" == "batchbuilder" (
 	echo set /a __return_recursion__=%%__return_recursion__%% + 1
 	echo )
 	echo if "%%1" == "batchbuilder" (
 	echo set __return_%%__return_recursion__%%__=%%~3
+	echo shift /1
 	echo shift /1
 	echo shift /1
 	echo shift /1
@@ -20,6 +22,7 @@ set root=%%~dp0
 	echo )
 	echo set __callee__=
 	echo set __return__=
+	echo set this=
 
 for /F "tokens=1,2,3,4,* eol=" %%a IN ('type %1') do (
 	if "%%a" == "import" (
@@ -74,7 +77,7 @@ for /F "tokens=1,2,3,4,* eol=" %%a IN ('type %1') do (
 			)
 		)
 
-		echo call %%^^~dp0!origin! batchbuilder batchbuilder_export_!import! "!to!" !args!
+		echo call %%^^~dp0!origin! batchbuilder batchbuilder_export_!import! "!to!" "" !args!
 	) else (
 		if "%%a" == "new" (
 			rem new -> A B
