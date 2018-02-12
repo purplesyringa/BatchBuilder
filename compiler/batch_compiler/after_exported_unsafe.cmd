@@ -1,5 +1,7 @@
-rem Save return value
+rem Save return value and instances
+
 call echo %%__return_value__%% >"%__local_storage__%"
+set "__instance_" >>"%__passed_global_storage__%"
 
 endlocal & set __local_storage__=%__local_storage__%
 

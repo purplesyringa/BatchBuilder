@@ -5,7 +5,11 @@ for /F "tokens=1,* delims==" %%a IN ('set') do (
 			setlocal ENABLEDELAYEDEXPANSION
 			set a=%%a
 			if not "!a:~0,9!" == "__return_" (
-				endlocal & set %%a=
+				if not "!a:~0,11!" == "__instance_" (
+					endlocal & set %%a=
+				) else (
+					endlocal
+				)
 			) else (
 				endlocal
 			)
