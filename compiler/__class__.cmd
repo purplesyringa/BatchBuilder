@@ -36,5 +36,19 @@ call set __origin__=%%%__instance__%.__origin__%%
 shift /1
 shift /1
 shift /1
+shift /1
 
-call %~dp0%__origin__% batchbuilder batchbuilder_export_%__class__%$%__callee__% %1 %2 %3 %4 %5 %6 %7 %8 %9
+rem Get all arguments to variable
+set params=%1
+
+setlocal ENABLEDELAYEDEXPANSION
+set id=0
+for %%r in (%*) do (
+	if !id! gtr 4 (
+		set params=!params! %%r
+	)
+	set /a id=!id! + 1
+)
+endlocal & set params=%params%
+
+call %~dp0%__origin__% batchbuilder batchbuilder_export_%__class__%$%__callee__% %params%
