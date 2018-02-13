@@ -204,7 +204,10 @@ if "%settings_packed%" == "no" (
 
 	:: Append CAB to bootstrapper ::
 		copy dist\settings.cmd+compiler\bootstrap.cmd+dist\data.cab /B dist\bootstrap.cmd
-		del dist\data.cab
+
+		if not "%settings_delete_compiled%" == "no" (
+			del dist\data.cab
+		)
 )
 
 if not "%settings_delete_compiled%" == "no" (
