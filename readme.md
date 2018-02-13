@@ -112,6 +112,18 @@ Then the first value can be accessed as `%1`, the second as `%2`, and so on.
 +------------------------------------------------+
 ```
 
+Some parameters can be named, then `%1`, `%2` etc. will mean "1/2 argument after last named":
+
+```
++------------------------------------------------+
+| hi.bat                                         |
++------------------------------------------------+
+| export say_hello name                          |
+|  echo Hello, %name%!                           |
+| end export                                     |
++------------------------------------------------+
+```
+
 
 Modules can be useful for simple tasks, for example, delete question.
 
@@ -119,8 +131,8 @@ Modules can be useful for simple tasks, for example, delete question.
 +------------------------------------------------+
 | delete.cmd                                     |
 +------------------------------------------------+
-| export delete_dir                              |
-|  set /p agree=Do you want to delete %1?        |
+| export delete_dir dir                          |
+|  set /p agree=Do you want to delete %dir%?     |
 |  if "%agree%" == "yes" (                       |
 |   rmdir /S /Q %1                               |
 |  )                                             |
@@ -148,8 +160,8 @@ BatchBuilder's `batch` compiler also supports operator `return` inside `export` 
 +------------------------------------------------+
 | delete.cmd                                     |
 +------------------------------------------------+
-| export ask                                     |
-|  set /p result=%1?                             |
+| export ask q                                   |
+|  set /p result=%q%?                            |
 |  return %result%                               |
 | end export                                     |
 |                                                |
