@@ -189,26 +189,31 @@ exit /b
 	rem goto :batchbuilder_end_export_A
 	rem :batchbuilder_export_A
 
+	for /F "tokens=1* eol=" %%g in ("%~4") do (
+		set func_name=%%g
+		set args=%%h
+	)
+
 	:: Make sure nothing is exported at the moment ::
 		if not "!exporting!" == "BOGUS" (
-			echo Export of %~4 inside export of !exporting! >&2
+			echo Export of %func_name% inside export of !exporting! >&2
 			exit /b 1
 		)
 
-		set exporting=%~4
+		set exporting=%func_name%
 
 	:: Check that this was not exported yet ::
-		if exist "%~dp0..\info\exports\%~4" (
-			<%~dp0..\info\exports\%~4 set /p origin=
-			echo Second export of %~4: first export in !origin! >&2
+		if exist "%~dp0..\info\exports\%func_name%" (
+			<%~dp0..\info\exports\%func_name% set /p origin=
+			echo Second export of %func_name%: first export in !origin! >&2
 			exit /b 1
 		)
 
-		echo %~2>"%~dp0..\info\exports\%~4"
-		echo no>"%~dp0..\info\exports_has_return\%~4"
+		echo %~2>"%~dp0..\info\exports\%func_name%"
+		echo no>"%~dp0..\info\exports_has_return\%func_name%"
 
-	echo goto :batchbuilder_end_export_%~4
-	echo :batchbuilder_export_%~4
+	echo goto :batchbuilder_end_export_%func_name%
+	echo :batchbuilder_export_%func_name%
 
 	if "!exporting_safe_recursion!" == "yes" (
 		if "!exporting_follow_local!" == "yes" (
@@ -222,6 +227,11 @@ exit /b
 		) else (
 			type %~dp0before_exported_unsafe.cmd
 		)
+	)
+
+	for %%r in (%args%) do (
+		echo set "%%r=%%~1"
+		echo shift /1
 	)
 
 	exit /b
