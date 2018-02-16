@@ -14,7 +14,11 @@ for /F "tokens=1,* delims==" %%a IN ('set') do (
 				set a=%%a
 				if not "!a:~0,9!" == "__return_" (
 					if not "!a:~0,11!" == "__instance_" (
-						endlocal & set %%a=
+						if not "!a:~0,8!" == "__class_" (
+							endlocal & set %%a=
+						) else (
+							endlocal
+						)
 					) else (
 						endlocal
 					)
